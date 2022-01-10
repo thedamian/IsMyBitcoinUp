@@ -1,0 +1,55 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="refresh" content="600" />
+    <meta name="Title" content="Reverse Game">
+    <meta name="Description" content="Reverse Game">
+    <meta name="Keyword" content="reverse,game">
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/kognise/water.css@latest/dist/dark.min.css'>
+    <link rel="manifest" href="manifest.json">
+    <style>
+        #status {
+            margin-top:40px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Is Bitcoin Up for me?</h1>
+    What did you guy it for:<input id="price" type="number" value="40000"><BR>
+    <button onclick="checkprice()" id="checkPriceBtn">Check Price</button>
+
+    <div id="status"></div>
+  <script>
+   
+    let PriceInput = document.getElementById("price");
+     PriceInput.focus();
+     let statusDiv = document.getElementById("status");
+     let checkPriceBtn = document.getElementById("checkPriceBtn")
+     checkPriceBtn.disabled = true;
+     let BitcoinPrices = {};
+     (async ()=> {
+     BitcoinPrices = await fetch("https://api.sampleapis.com/bitcoin/historical_prices").then(res=>res.json());
+     checkPriceBtn.disabled = false;
+     console.log(BitcoinPrices);
+    })();
+
+      function checkprice() {
+            let MyBitcoinPrice = PriceInput.value;
+            let PriceFound = false;
+            let lastMonth = {};
+            BitcoinPrices.map(bitcoinMonth => {
+                if (!PriceFound && MyBitcoinPrice > bitcoinMonth.Price){
+                    statusDiv.innerHTML = "You've been profitable since: <B>" + bitcoinMonth.Date + "</B><BR> Back then it was: " +  bitcoinMonth.Price + "<BR> And then it was: " + lastMonth.Price + " on " + lastMonth.Date;
+                    PriceFound = true;
+                }
+                lastMonth = bitcoinMonth;
+            })
+      }
+
+  </script>
+</body>
+</html>
